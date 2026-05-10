@@ -178,8 +178,10 @@ header {
     object-fit: cover;
 }
 
-.srv-texte {
+.srv-texte {    
     width: 200px;
+    font-size: large;
+    font-weight: bold;
 }
 
 .presta {
@@ -258,16 +260,21 @@ footer p {
 .cont {
     width: 50px;
     height: 50px;
-    border: 1px solid black;
-    border-radius: 20px;
 }
 
 .salon-cont {           
     width: 400px;
     height: 400px; 
     margin: 0 auto;
-    box-shadow: 3px 3px 30px rgb(210, 210, 210);
+    box-shadow: 3px 3px 30px rgb(119, 119, 119);
     border-radius: 15px;
+    overflow: hidden;
+}
+
+.salon-cont img {
+    width: 600px;
+    height: auto;
+
 }
 
 .equipe {
@@ -344,7 +351,10 @@ footer p {
     transform: scale(1.05);
 }
 
-
+.cont img {
+    width: 50px;
+    height: 50px;
+}
 
 @media (max-width: 768px) {
     footer {
