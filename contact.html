@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Salon Coiffure - Chatbot</title>
+</html>
+<body>
+    <header>
+        <img class = "logo" src = "images/logo.png">
+        <h1 class = "hdr-titre">SALON ELEGANCE</h1>
+        <div class = "hdr-contenu">
+            <a href="index.html"><h2>ACCUEIL</h2></a>
+            <a href="presta.html"><h2>PRESTATIONS</h2></a>
+            <a href="salon.html"><h2>SALON</h2></a>
+            <h2>CONTACT</h2></a>
+        </div>
+        
+    </header>
+
+    <div class="section-chatbot">
+        <h2 class="txt-align">PRISE DE RENDEZ-VOUS</h2>
+        <hr class="petit-hr">
+        <br>
+        <div class="boite-chat" id="chat-box"></div>
+        <div class="zone-boutons" id="chat-choices"></div>
+        <div class="zone-input">
+            <input type="text" id="user-input" placeholder="Votre réponse...">
+            <div class="boutton" onclick="envoyerMessage()">ENVOYER</div>
+        </div>
+    </div>
+
+    <hr>
+    <footer>
+        <div class="ft-elm">
+            <h3>ADRESSE</h3>
+            <p>5 Place de la voie lactée, 314159, Univers.</p>
+        </div>
+        <div class="ft-elm">
+            <h3>HORAIRES</h3>
+            <p>Ouvert du Lundi au Samedi de 8h à 21h.</p>
+        </div>
+        <div class="ft-elm">
+            <h3>SUIVEZ NOUS</h3>
+            <div class="ft-images">
+                <div class="cont"></div>
+                <div class="cont"></div>
+                <div class="cont"></div>
+            </div>
+        </div>
+        <div class="ft-elm">
+            <h3>A PROPOS</h3>
+            <p>Un salon de passionés.</p>
+        </div>
+    </footer>
+    <hr>
+    <p class="txt-align">@ 2025 Salon Elegance - Tout droits résérvés</p>
+
+<script>
+    var etape = 0;
+    var laDate = "";
+    var lHeure = "";
+    var leService = "";
+
+    function afficherMessage(texte, quiParle) {
+        var boite = document.getElementById("chat-box");
+        var nouveauMessage = document.createElement("div");
+        if (quiParle == "bot") {
+            nouveauMessage.className = "message message-bot";
+        }
+        if (quiParle == "user") {
+            nouveauMessage.className = "message message-utilisateur";
+        }
+        nouveauMessage.innerHTML = texte;
+        boite.appendChild(nouveauMessage);
+        boite.scrollTop = boite.scrollHeight;
+    }
+
+    function afficherBoutons(listeBoutons) {
+        var zone = document.getElementById("chat-choices");
+        zone.innerHTML = "";
+        for (var i = 0; i < listeBoutons.length; i++) {
+            var b = document.createElement("div");
+            b.className = "bouton-choix";
+            b.innerHTML = listeBoutons[i];
+            b.onclick = function() { reponseUtilisateur(this.innerHTML); }
+            zone.appendChild(b);
+        }
+    }
+
+    function reponseUtilisateur(rep) {
+    afficherMessage(rep, "user");
+    document.getElementById("user-input").value = "";
+    document.getElementById("chat-choices").innerHTML = "";
+
+    setTimeout(function() {
+        if (etape == 0) {
+            if (rep.toLowerCase() == "non") {
+                afficherMessage("D'accord, à bientôt !", "bot");
+            } else if (rep.toLowerCase() == "oui") {
+                afficherMessage("Quelle date vous convient ?", "bot");
+                etape = 1;
+            } else {
+                afficherMessage("Je n'ai pas compris... Souhaitez vous prendre rendez vous ?", "bot");
+                afficherBoutons(["Oui", "Non"]);
+            }
+        } else if (etape == 1) {
+            if (rep.trim() == "") {
+                afficherMessage("Je n'ai pas compris, quelle date vous convient ?", "bot");
+            } else {
+                laDate = rep;
+                afficherMessage("À quelle heure ?", "bot");
+                etape = 2;
+            }
+        } else if (etape == 2) {
+            if (rep.trim() == "") {
+                afficherMessage("Je n'ai pas compris, à quelle heure ?", "bot");
+            } else {
+                lHeure = rep;
+                afficherMessage("Quel service souhaitez vous ?", "bot");
+                afficherBoutons(["Coupe", "Coloration", "Brushing", "Barbe", "Massage"]);
+                etape = 3;
+            }
+        } else if (etape == 3) {
+            var servicesValides = ["coupe", "coloration", "brushing", "barbe", "massage"];
+            if (servicesValides.indexOf(rep.toLowerCase()) == -1) {
+                afficherMessage("Je n'ai pas compris, choisissez un service !", "bot");
+                afficherBoutons(["Coupe", "Coloration", "Brushing", "Barbe", "Massage"]);
+            } else {
+                leService = rep;
+                afficherMessage("C'est noté ! Rendez vous le " + laDate + " a " + lHeure + " pour " + leService + ". A bientot !!", "bot");
+                etape = 4;
+            }
+        }
+    }, 500);    
+    }
+    function envoyerMessage() {
+        var ceQueLeUserAEcrit = document.getElementById("user-input").value;
+        if (ceQueLeUserAEcrit == "") {
+            return;
+        }
+        reponseUtilisateur(ceQueLeUserAEcrit);
+    }
+
+    document.getElementById("user-input").addEventListener("keydown", function(e) {
+        if (e.key == "Enter") {
+            envoyerMessage();
+        }
+    });
+
+    afficherMessage("Bonjour ! Souhaitez vous prendre rendez vous ?", "bot");
+    afficherBoutons(["Oui", "Non"]);
+</script>
+</body>
